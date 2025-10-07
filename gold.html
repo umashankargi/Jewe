@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eshwar Jewelry - Gold Collection</title>
+    
+    <link rel="stylesheet" href="G.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <style>
+        /* Additional styles for mobile menu */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 15px;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: var(--dark-bg);
+            margin: 3px 0;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Mobile Menu Panel */
+        .mobile-menu-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-menu-panel.active {
+            right: 0;
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            background: var(--dark-bg);
+            color: white;
+        }
+
+        .mobile-menu-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .mobile-menu-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-close:hover {
+            color: var(--primary-gold);
+            transform: rotate(90deg);
+        }
+
+        .mobile-menu-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .mobile-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-nav-link {
+            display: block;
+            padding: 15px 20px;
+            color: var(--dark-bg);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .mobile-nav-link:hover,
+        .mobile-nav-link.active {
+            color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+            padding-left: 25px;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: var(--dark-bg);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            color: var(--primary-gold);
+        }
+
+        /* Footer Mobile Layout */
+        @media (max-width: 767px) {
+            .footer .row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 30px;
+            }
+            
+            .footer .col-lg-4,
+            .footer .col-lg-3,
+            .footer .col-lg-2 {
+                flex: 0 0 calc(50% - 15px);
+                max-width: calc(50% - 15px);
+            }
+            
+            .footer .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            /* Show mobile menu button on mobile */
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            /* Hide desktop navbar on mobile */
+            .navbar-collapse {
+                display: none !important;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .footer .col-lg-4,
+            .footer .col-lg-3,
+            .footer .col-lg-2 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            .mobile-menu-panel {
+                width: 280px;
+            }
+        }
+
+        /* Loading button styles */
+        .btn.loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        .btn-gold.loading::after {
+            border: 2px solid var(--dark-bg);
+            border-top-color: transparent;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="page-loader">
+        <div class="loader-content">
+            <div class="gold-loader"></div>
+            <p>Loading Elegance...</p>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast-container">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <i class="fas fa-info-circle"></i>
+            <div id="toastMessage">Notification message</div>
+        </div>
+    </div>
+    
+    <header class="header-utility-bar">
+        <div class="gold-price-ticker">
+            <div class="container">
+                <div class="ticker-content">
+                    <span class="gold-rate"><i class="fas fa-coins me-2"></i> 24K Gold: ₹-----/g</span>
+                    <span class="last-updated">Updated: <span id="current-time"></span></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert-bar">
+            <div class="container">
+                <a href="https://chat.whatsapp.com/HGePso072MEFnRHfrGXA16" target="_blank" class="whatsapp-community-alert">
+                    <i class="fab fa-whatsapp"></i> Join Our WhatsApp Community for Exclusive Offers!
+                </a>
+                <a href="https://maps.app.goo.gl/Zq5KPthJUn6sJwXc6" target="_blank" class="map-link">
+                    <i class="fas fa-map-marker-alt"></i> Visit Us in Valigonda
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="logo.png" alt="Eshwar Jewelry" class="logo" loading="lazy">
+                <span class="brand-name">Eshwar Jewelry</span>
+            </a>
+            
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn" aria-label="Toggle Mobile Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Desktop Navigation -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="gold.html">Gold</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="silver.html">Silver</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#collections">Collections</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu-panel">
+        <div class="mobile-menu-header">
+            <h3>Menu</h3>
+            <button class="mobile-menu-close" aria-label="Close Menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-body">
+            <ul class="mobile-nav">
+                <li><a href="index.html" class="mobile-nav-link">Home</a></li>
+                <li><a href="gold.html" class="mobile-nav-link active">Gold</a></li>
+                <li><a href="silver.html" class="mobile-nav-link">Silver</a></li>
+                <li><a href="#collections" class="mobile-nav-link">Collections</a></li>
+                <li><a href="#about" class="mobile-nav-link">About</a></li>
+                <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <main>
+        <section class="gold-hero position-relative overflow-hidden" role="banner">
+            <div class="gold-overlay"></div>
+            <div class="gold-particles"></div>
+            <div class="container position-relative z-index-1">
+                <div class="row align-items-center min-vh-80">
+                    <div class="col-lg-7 order-lg-1 order-2 py-5" data-aos="fade-up" data-aos-duration="800">
+                        <h1 class="hero-title">
+                            <span class="text-gold">Eshwar Jewelry</span> Gold Collection
+                        </h1>
+                        <p class="hero-subtitle lead">
+                            Handcrafted 22K & 24K gold pieces blending timeless tradition with contemporary elegance. 
+                            Each piece is **BIS hallmarked** for purity assurance.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="#gold-collection" class="btn btn-gold">
+                                <i class="fas fa-gem me-2"></i> Explore Collection
+                            </a>
+                            <a href="https://wa.me/919912438836" class="btn btn-outline-light" target="_blank">
+                                <i class="fab fa-whatsapp me-2"></i> Chat on WhatsApp
+                            </a>
+                        </div>
+                        <div class="trust-badges mt-5 d-flex flex-wrap gap-4">
+                            <div class="badge-item d-flex align-items-center">
+                                <i class="fas fa-award text-gold me-2"></i>
+                                <span>BIS Hallmarked</span>
+                            </div>
+                            <div class="badge-item d-flex align-items-center">
+                                <i class="fas fa-history text-gold me-2"></i>
+                                <span>Since 2001</span>
+                            </div>
+                            <div class="badge-item d-flex align-items-center">
+                                <i class="fas fa-hand-holding-heart text-gold me-2"></i>
+                                <span>Lifetime Warranty</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 order-lg-2 order-1">
+                        <div class="hero-image-container position-relative">
+                            <img src="Eshwra.png" alt="Luxury Gold Jewelry Collection" class="rounded-4 shadow-lg" loading="lazy" style="width: 100%;">
+                            <div class="floating-badge bg-gold text-white">
+                                <i class="fas fa-certificate me-2"></i>
+                                <span>Authentic 24K Gold</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="collections" class="section bg-light"  >
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="section-title" data-aos="fade-up">Our Gold Collections</h2>
+                    <p class="lead" data-aos="fade-up" data-aos-delay="100">Crafted with precision, designed for eternity</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="product-card">
+                            <div class="product-img-container">
+                                <img src="neckfm.webp" alt="Gold Necklaces" class="product-img" loading="lazy">
+                                <span class="product-badge">Bestseller</span>
+                                <button class="wishlist-btn" aria-label="Add to Wishlist"><i class="far fa-heart"></i></button>
+                            </div>
+                            <div class="product-body">
+                                <h3 class="product-title">Gold Necklaces</h3>
+                                <p class="text-muted">A necklace is a piece of jewelry worn around the neck, often made of metal, beads, or gems.</p>
+                                <div class="product-actions">
+                                    <a href="gold-necklaces.html" class="btn btn-outline-primary">View Collection</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="product-card">
+                            <div class="product-img-container">
+                                <img src="to.jpg" alt="Gold Earrings" class="product-img" loading="lazy">
+                                <span class="product-badge">New Arrival</span>
+                                <button class="wishlist-btn" aria-label="Add to Wishlist"><i class="far fa-heart"></i></button>
+                            </div>
+                            <div class="product-body">
+                                <h3 class="product-title">Gold Earrings</h3>
+                                <p class="text-muted">Earrings are decorative jewelry worn on the earlobes, in styles such as studs, hoops, or danglers.</p>
+                                <div class="product-actions">
+                                    <a href="gold-earrings.html" class="btn btn-outline-primary">View Collection</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                        <div class="product-card">
+                            <div class="product-img-container">
+                                <img src="chain.avif" alt="Gold Chains" class="product-img" loading="lazy">
+                                <span class="product-badge">Exclusive</span>
+                                <button class="wishlist-btn" aria-label="Add to Wishlist"><i class="far fa-heart"></i></button>
+                            </div>
+                            <div class="product-body">
+                                <h3 class="product-title">Gold Chains</h3>
+                                <p class="text-muted">A gold chain is a timeless accessory, crafted from high-quality gold, perfect for adding elegance.</p>
+                                <div class="product-actions">
+                                    <a href="gold-chains.html" class="btn btn-outline-primary">View Collection</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="product-card">
+                            <div class="product-img-container"><img src="ring.jpg" alt="Gold Rings" class="product-img" loading="lazy"><button class="wishlist-btn" aria-label="Add to Wishlist"><i class="far fa-heart"></i></button></div>
+                            <div class="product-body"><h3 class="product-title">Gold Rings</h3><p class="text-muted">A ring is a circular piece of jewelry worn on the finger, symbolizing style or commitment.</p><div class="product-actions"><a href="gold-rings.html" class="btn btn-outline-primary">View Collection</a></div></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="product-card">
+                            <div class="product-img-container"><img src="bang.jpg" alt="Gold Bangles" class="product-img" loading="lazy"><button class="wishlist-btn" aria-label="Add to Wishlist"><i class="far fa-heart"></i></button></div>
+                            <div class="product-body"><h3 class="product-title">Gold Bangles</h3><p class="text-muted">Bangles are rigid, circular bracelets worn as stylish accessories or symbols of tradition.</p><div class="product-actions"><a href="gold-bangles.html" class="btn btn-outline-primary">View Collection</a></div></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                        <div class="product-card">
+                            <div class="product-img-container"><img src="bral.jpg" alt="Gold Bracelets" class="product-img" loading="lazy"><button class="wishlist-btn" aria-label="Add to Wishlist"><i class="far fa-heart"></i></button></div>
+                            <div class="product-body"><h3 class="product-title">Gold Bracelets</h3><p class="text-muted">A bracelet is a flexible piece of jewelry worn around the wrist, adding a stylish touch to any outfit.</p><div class="product-actions"><a href="gold-bracelets.html" class="btn btn-outline-primary">View Collection</a></div></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="pusa.jpg" alt="Pusal Thadu Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Pusal Thadu</h3>
+                        <p class="text-muted mb-3">A Pusala Thadu is a traditional pearl necklace, often worn for elegance in cultural and festive occasions.</p>
+                        <div class="product-actions">
+                            <a href="pusalthadu.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="mati.webp" alt="Matilu Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Matilu</h3>
+                        <p class="text-muted mb-3">Matilu is a traditional gold ear chain that connects the earring to the hair, worn for elegant support and style.</p>
+                        <div class="product-actions">
+                            <a href="matilu.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="nose.jpg" alt="Noserings Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Noserings</h3>
+                        <p class="text-muted mb-3">A nose ring is a traditional jewelry piece worn through the nose, symbolizing beauty and cultural heritage in many regions.</p>
+                        <div class="product-actions">
+                            <a href="nosering.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="lackets.jpg" alt="Lockets Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Lockets</h3>
+                        <p class="text-muted mb-3">A locket is a small, decorative pendant that opens to hold a photo or keepsake, often worn on a chain around the neck.</p>
+                        <div class="product-actions">
+                            <a href="lockets.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="tha.webp" alt="Tali Bottu Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Tali Bottu</h3>
+                        <p class="text-muted mb-3">Tali Bottu is a sacred gold or black bead necklace tied by the groom around the bride's neck during a South Indian wedding, symbolizing marriage and commitment.</p>
+                        <div class="product-actions">
+                            <a href="talibottu.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="nall.jpg" alt="Nalla Pusal Thadu Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Nalla Pusal Thadu</h3>
+                        <p class="text-muted mb-3">Nalla Pusalu Thadu is a traditional South Indian black bead chain, often worn by married women as a symbol of marital status, protection, and well-being of the husband.</p>
+                        <div class="product-actions">
+                            <a href="nallapusaluthadu.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="baby ring/ring (2).jpg" alt="Pogulu Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Pogulu</h3>
+                        <p class="text-muted mb-3">Gold pogulu earrings are lightweight, traditional hoop or stud designs, often crafted for kids.</p>
+                        <div class="product-actions">
+                            <a href="pogulu.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="vadalam.jpg" alt="Vaddanam Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Vaddanam</h3>
+                        <p class="text-muted mb-3">A vaddanam is a traditional South Indian gold waist belt worn by women, especially brides, during weddings and festivals to secure the saree and symbolize status or fertility.</p>
+                        <div class="product-actions">
+                            <a href="vaddanam.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="product-card">
+                    <div class="product-img-container position-relative">
+                        <img src="pulli.webp" alt="Puligoru Chain Collection" class="img-fluid product-img" loading="lazy">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-title">Puligoru Chain</h3>
+                        <p class="text-muted mb-3">A puligoru chain is a traditional South Indian gold necklace with a tiger claw-shaped pendant, symbolizing strength and pride.</p>
+                        <div class="product-actions">
+                            <a href="puligoru-chain.html" class="btn btn-outline-primary">View Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="about" class="section" aria-labelledby="craftsmanship-title">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                        <img src="gold.jpg" alt="Gold Jewelry Craftsmanship" class="object-fit-cover rounded-4 shadow-lg" style="width: 100%;" loading="lazy">
+                    </div>
+                    <div class="col-lg-6" data-aos="fade-left">
+                        <h2 class="section-title text-start" id="craftsmanship-title">Artisan Craftsmanship</h2>
+                        <p class="lead">Each piece tells a story of tradition and skill</p>
+                        <p>Our gold jewelry is handcrafted by master artisans who have perfected their craft over generations. Using techniques passed down through centuries combined with modern precision, we create pieces that stand the test of time.</p>
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-4 d-flex"><div class="me-3 text-gold"><i class="fas fa-medal fa-2x"></i></div><div><h5>BIS Hallmarked</h5><p class="small mb-0">Guaranteed purity with certification</p></div></div>
+                            <div class="col-md-6 mb-4 d-flex"><div class="me-3 text-gold"><i class="fas fa-hands-helping fa-2x"></i></div><div><h5>Custom Designs</h5><p class="small mb-0">Creations tailored to your vision</p></div></div>
+                            <div class="col-md-6 mb-4 d-flex"><div class="me-3 text-gold"><i class="fas fa-gem fa-2x"></i></div><div><h5>Premium Materials</h5><p class="small mb-0">Only 22K and 24K gold</p></div></div>
+                            <div class="col-md-6 mb-4 d-flex"><div class="me-3 text-gold"><i class="fas fa-award fa-2x"></i></div><div><h5>Lifetime Warranty</h5><p class="small mb-0">Quality assurance on all products</p></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col footer-about">
+                    <img src="logo.png" alt="Eshwar Jewelry" class="footer-logo">
+                    <p>Eshwar Jewelry — Crafting exquisite pieces since 1999 in Valigonda. Blending traditional techniques with modern designs, every creation reflects our dedication to quality and craftsmanship.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <!-- Highlighted WhatsApp Community Link -->
+                        <a href="https://chat.whatsapp.com/HGePso072MEFnRHfrGXA16" target="_blank" aria-label="WhatsApp Community" style="background-color: #25D366; color: white;">
+                            <i class="fas fa-users"></i>
+                        </a>
+                        <a href="https://wa.me/919912438836" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="gold.html">Gold Collection</a></li>
+                        <li><a href="silver.html">Silver Collection</a></li>
+                       
+                    </ul>
+                </div>
+                <div class="footer-col" id="contact">
+                    <h3>Contact Us</h3>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/Zq5KPthJUn6sJwXc6" target="_blank" class="highlight-link">
+                            Main Road, Valigonda, Telangana 508112
+                        </a></li>
+                        <!-- Highlighted WhatsApp Number -->
+                        <li><i class="fab fa-whatsapp" style="color: #25D366;"></i> 
+                            <a href="https://wa.me/919912438836" target="_blank" style="color: #25D366; font-weight: bold;">+91 9912438836</a>
+                        </li>
+                        <li><i class="fas fa-phone-alt"></i> <a href="tel:+919912438836">+91 9912438836</a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="">bogaravikumar143@gmail.com</a></li>
+                        <!-- WhatsApp Community Link in Contact Info -->
+                        <li><i class="fas fa-users" style="color: #25D366;"></i> 
+                            <a href="https://chat.whatsapp.com/HGePso072MEFnRHfrGXA16" target="_blank" style="color: #25D366; font-weight: bold;">Join Our WhatsApp Community</a>
+                        </li>
+                        <li><i class="fas fa-clock"></i> Mon-Sat: 10AM - 8PM | Sun: Closed</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2001 Eshwar Jewelry. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/919912438836" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    <div class="back-to-top" aria-label="Back to Top"><i class="fas fa-arrow-up"></i></div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init({
+          once: true, 
+          duration: 800, 
+      });
+    </script>
+    <script src="G.js"></script>
+    
+</body>
+</html>
